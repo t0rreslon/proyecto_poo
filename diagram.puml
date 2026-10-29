@@ -1,0 +1,135 @@
+@startuml
+
+abstract class Persona{
+    - documento : String
+    - nombre : String
+    # Persona(documento : String, nombre : String)
+    + getdocumento() : String
+    + getNombre() : String
+    + diasMaximoPrestamo() : int
+    + equiposMinimos() : int
+    + tipo() : String
+    +toString() : String
+}
+
+abstract class Equipo{
+    - codigo : String
+    - marca : String
+    - disponible: boolean
+    #Equipo(codigo : String, marca : String)
+    + isDisponible(): boolean
+    ~ marcarPrestado() : void
+    ~ marcarDevuelto() : void
+    + multaDiaria() : double
+    + tipo() : String
+}
+
+class Estudiante{
+    - programa : String
+    + Estudiante(documento : String, nombre : String, programa : String)
+    + diasMaximoPrestamo() : int
+    + equiposMaximos() : int
+    + tipo() : String
+}
+
+class Docente{
+    - dependencia : String
+    + Docente(documento : String, nombre : String, dependencia : String)
+    + diasMaximoPrestamo() : int
+    + equiposMaximos() : int
+    + tipo() : String
+}
+
+class Portatil{
+    - ram : int
+    - cargador : Cargador
+    + Portatil(codigo : String, marca : String, ram : int)
+    + multaDiaria() : double
+    +tipo() : String
+}
+
+class Cargador{
+    - serial : String
+    - vatios : int
+    - Cargador(serial : String, vatios int)
+}
+
+class Proyector{
+    - lumenes : int
+    + multaDiaria() : double
+    + tipo() : String
+}
+
+class Tablet{
+    + multaDiaria() : double
+    + tipo() : String
+}
+
+class Prestamo{
+    {static} - consecutivo : int
+    - numero : int
+    - persona : Persona
+    - equipos : List<Equipo>
+    - activo : boolean
+    ~ Prestamo(persona : Persona, equipos : List<Equipo>)
+    + getEquipos() : List<Equipo>
+    + isActivo() : boolean
+    ~ cerrar() : void
+}
+
+class ReporteUniversitario{
+    + imprimir(inventario : List<Equipo>) : void
+}
+
+class  MultaEstandar{}
+class MultaUniversitaria{}
+class NotificadorConsola{}
+
+class RespositorioMemoria{
+    prestamos : List<Prestamo>
+}
+
+interface RespositorioPrestamos{
+    + guardar(prestamo : Prestamo) : void
+    + buscar(numero : int) : Prestamo
+    + activosDe(persona : Persona) : List<Persona>
+}
+
+interface CalculadoraMulta{
+    + Calcular(prestamo : Persona, diasRetraso : int) : double
+}
+
+interface Notificador{
+    + avisar(persona : Persona, mensaje : String) : void
+}
+
+class ServicioPrestamos{
+    - repositorio : RespositorioPrestamos
+    - calculadora : CalculadoraMulta
+    - notificador : Notificador
+    + prestar(persona : Persona, equipo : Equipo) : Prestamo
+    + prestar(persona : Persona, equipos : List<Equipo>) : Prestamo
+    + devolver(numeroPrestamo : int, diasUsados : int) : double
+}
+
+Persona <|-- Estudiante
+Persona <|-- Docente
+Equipo <|-- Proyector
+Equipo <|-- Tablet
+Equipo <|-- Portatil
+Portatil *-- Cargador
+Persona <-- Prestamo
+Prestamo o-- Equipo
+RespositorioMemoria o-- Prestamo
+RespositorioPrestamos <|.. RespositorioMemoria
+ServicioPrestamos --> RespositorioPrestamos
+ServicioPrestamos ..> Prestamo
+ServicioPrestamos --> CalculadoraMulta
+MultaEstandar ..|> CalculadoraMulta
+MultaUniversitaria --> MultaEstandar
+MultaUniversitaria --|> CalculadoraMulta
+NotificadorConsola --|> Notificador
+ServicioPrestamos --> Notificador
+ReporteUniversitario --> Equipo
+
+@enduml
