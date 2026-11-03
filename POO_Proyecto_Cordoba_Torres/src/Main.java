@@ -1,59 +1,24 @@
 import java.util.ArrayList;
 import java.util.List;
-
+ 
 public class Main {
     public static void main(String[] args) {
-        /* ******************************************************************************* */
-        /* 1. Cree dos portátiles, un proyector y una tablet; una estudiante y un docente. */
-        /* ******************************************************************************* */
-        ArrayList<Estudiante> e = new ArrayList<>(); // <-- lista de estudiantes
-        ArrayList<Docente> d = new ArrayList<>(); // <-- lista de docentes
-        ArrayList<Portatil> p = new ArrayList<>(); // <-- lista de portatiles
-        ArrayList<Proyector> pr = new ArrayList<>(); // <-- lista de proyectores
-        ArrayList<Tablet> t = new ArrayList<>(); // <-- lista de tablets
-        ArrayList<Cargador> c = new ArrayList<>(); // <-- lista de cargadores
-        // cargadores
-        c.add(new Cargador("101", 20));
-        c.add(new Cargador("102", 30));
-        c.add(new Cargador("103", 25));
-        // 2 portatiles
-        p.add(new Portatil("PO-001", "Dell", true, 16, "101"));
-        p.add(new Portatil("PO-002", "Lenovo", true, 24, "102"));
-        // 1 proyector
-        pr.add(new Proyector("PR-001", "Videobeam", true, 2000));
-        // 1 tablet
-        t.add(new Tablet("TA-001", "Lenovo", true));
-        // 1 estudiante
-        e.add(new Estudiante("Isabella Torres", "1033466767", "Ingenieria de Software"));
-        // 1 docente
-        d.add(new Docente("Ramiro Lopera", "3456781", "Sistemas Digitales"));
-        /* ******************************************************************************** */
-        /* 2. La estudiante presta un portátil. El docente presta el proyector y la tablet. */
-        /* ******************************************************************************** */
-        List<Prestamo> prestamos = new ArrayList<>();
-
-        Prestamo prestamoEstudiante =
-            new Prestamo(e.get(0), "Préstamo de portátil");
-
-        prestamoEstudiante.agregarEquipo(p.get(0));
-
-        prestamos.add(prestamoEstudiante);
-
-
-        // Préstamo del docente
-        Prestamo prestamoDocente =
-            new Prestamo(d.get(0), "Préstamo de proyector y tablet");
-
-        prestamoDocente.agregarEquipo(pr.get(0));
-        prestamoDocente.agregarEquipo(t.get(0));
-
-        prestamos.add(prestamoDocente);
-        
-        /* ******************************************************************************** */
-        /* 3. Intente que la estudiante preste otro portátil y 
-                que el docente preste el portátil ocupado.
-                Ambos deben ser rechazados con un mensaje claro. */
-        /* ******************************************************************************** */
+ 
+        // 1. Crear dos portatiles, un proyector y una tablet; una estudiante y un docente.
+            
+        Portatil portatil1 = new Portatil("PO-001", "Asus", true, 16, "101", 20);
+        Portatil portatil2 = new Portatil("PO-002", "Lenovo", true, 24, "102", 30);
+        Proyector proyector = new Proyector("PR-001", "Videobeam", true, 2000);
+        Tablet tablet = new Tablet("TA-001", "Lenovo", true);
+        Estudiante isabella = new Estudiante("Isabella Torres", "1033466767", "Ingenieria de Software");
+        Docente ramiro = new Docente("Ramiro Lopera", "3456781", "Sistemas Digitales");
+ 
+        List<Equipo> inventario = new ArrayList<>();
+        inventario.add(portatil1);
+        inventario.add(portatil2);
+        inventario.add(proyector);
+        inventario.add(tablet);
+ 
         RepositorioMemoria repositorio = new RepositorioPrestamo();
 
         ServicioPrestamos servicio = new ServicioPrestamos(
@@ -61,123 +26,77 @@ public class Main {
             new NotificacionConsola(),
             repositorio
         );
+ 
+        // 2. La estudiante presta un portátil. El docente presta el proyector y la tablet. 
 
-        for (Prestamo prestamo : prestamos) {
-            servicio.registrarPrestamo(prestamo);
-        }
-
-        Prestamo prestamoEstudiante1 = new Prestamo(
-            e.get(0),
-            "Segundo préstamo de portátil"
-        );
-
-        prestamoEstudiante1.agregarEquipo(p.get(1));
-
-        try {
-            servicio.registrarPrestamo(prestamoEstudiante1);
-        } catch (IllegalStateException ex) {
-            System.out.println("Préstamo rechazado para Isabella: "
-                + ex.getMessage());
-        }
-
-        Prestamo prestamoDocente1 = new Prestamo(
-            d.get(0),
-            "Préstamo de portátil ocupado"
-        );
+        Prestamo prestamoEstudiante = new Prestamo(isabella, "Prestamo de portátil");
+        prestamoEstudiante.agregarEquipo(portatil1);
+        servicio.registrarPrestamo(prestamoEstudiante);
+ 
+        Prestamo prestamoDocente = new Prestamo(ramiro, "Prestamo de proyector y tablet");
+        prestamoDocente.agregarEquipo(proyector);
+        prestamoDocente.agregarEquipo(tablet);
+        servicio.registrarPrestamo(prestamoDocente);
+ 
+        //3. Intente que la estudiante preste otro portatil y que el docente preste el portatil ocupado.
+        //Ambos deben ser rechazados con un mensaje claro. 
 
         try {
-            prestamoDocente1.agregarEquipo(p.get(0));
-            servicio.registrarPrestamo(prestamoDocente1);
-
+            Prestamo segundoPrestamo = new Prestamo(isabella, "Segundo prestamo de portátil");
+            segundoPrestamo.agregarEquipo(portatil2);
+            servicio.registrarPrestamo(segundoPrestamo);
         } catch (IllegalStateException ex) {
-            System.out.println("Préstamo rechazado para Ramiro: "
-                + ex.getMessage());
+            System.out.println("Prestamo rechazado para " + isabella.getNombre() + ": " + ex.getMessage());
         }
-        
-        /* ************************* */
-        /* 4. Imprima el inventario. */
-        /* ************************* */
+ 
+        try {
+            Prestamo prestamoOcupado = new Prestamo(ramiro, "Prestamo de portátil ocupado");
+            prestamoOcupado.agregarEquipo(portatil1);
+            servicio.registrarPrestamo(prestamoOcupado);
+        } catch (IllegalStateException ex) {
+            System.out.println("Prestamo rechazado para " + ramiro.getNombre() + ": " + ex.getMessage());
+        }
+ 
+        // 4. Imprimir el inventario
         System.out.println("======================");
         System.out.println("======INVENTARIO======");
         System.out.println("======================");
-        List<Equipo> inventario = new ArrayList<>();
-        inventario.addAll(p);
-        inventario.addAll(pr);
-        inventario.addAll(t);
 
         ReporteUniversitario reporte = new ReporteUniversitario();
         reporte.generarReporte(inventario);
+ 
+        // 5. La estudiante devuelve a los 5 días (2 de retraso). El docente a los 8 (a tiempo).
 
-        /* ***************************************************** */
-        /* 5. La estudiante devuelve a los 5 días (2 de retraso).
-        El docente devuelve a los 8 días (a tiempo).             */
-        /* ***************************************************** */
-        double multaEstudiante =
-            servicio.devolverPrestamo(prestamoEstudiante, 5);
-
-        double multaDocente =
-            servicio.devolverPrestamo(prestamoDocente, 8);
-
-        System.out.printf("Multa de la estudiante: $%.0f%n", multaEstudiante);
-        System.out.printf("Multa del docente: $%.0f%n", multaDocente);
-
-        
-        /* ***************************************************** */
-        /* 6. Cree otro servicio con la multa de semana universitaria
-            y repita un préstamo con devolución tardía.          */
-        /* ***************************************************** */
-        RepositorioMemoria repositorioSemana =
-        new RepositorioPrestamo();
-
+        double multaEstudiante = servicio.devolverPrestamo(prestamoEstudiante, 5);
+        double multaDocente = servicio.devolverPrestamo(prestamoDocente, 8);
+ 
+        /* 6. Otro servicio con la multa de semana universitaria y devolución tardía. */
         ServicioPrestamos servicioSemana = new ServicioPrestamos(
             new MultaUniversitaria(),
             new NotificacionConsola(),
-            repositorioSemana
+            new RepositorioPrestamo()
         );
-
-        Prestamo prestamoSemana = new Prestamo(
-        e.get(0),
-        "Préstamo durante semana universitaria"
-        );
-
-        prestamoSemana.agregarEquipo(p.get(0));
-
+ 
+        Prestamo prestamoSemana = new Prestamo(isabella, "Préstamo durante semana universitaria");
+        prestamoSemana.agregarEquipo(portatil1);
         servicioSemana.registrarPrestamo(prestamoSemana);
-
-        double multaSemana = servicioSemana.devolverPrestamo(
-            prestamoSemana,
-            5
-        );
-
-        System.out.printf(
-            "Multa de semana universitaria: $%.0f%n",
-            multaSemana
-        );
-        
-        /* ***************************************************** */
-        /* 7. Imprima el total de multas y el inventario final.  */
-        /* ***************************************************** */
-        
+        double multaSemana = servicioSemana.devolverPrestamo(prestamoSemana, 5);
+ 
+        /* 7. Total de multas e inventario final. */
         double totalMultas = multaEstudiante + multaDocente + multaSemana;
-
+ 
         System.out.println("\n======================");
         System.out.println("====== TOTAL MULTAS ======");
         System.out.println("======================");
-
         System.out.printf("Multa estudiante: $%.0f%n", multaEstudiante);
         System.out.printf("Multa docente: $%.0f%n", multaDocente);
         System.out.printf("Multa semana universitaria: $%.0f%n", multaSemana);
-
         System.out.printf("TOTAL DE MULTAS: $%.0f%n", totalMultas);
-
-
-        // Imprimir inventario final
+ 
         System.out.println("\n======================");
         System.out.println("===== INVENTARIO FINAL =====");
         System.out.println("======================");
-
         reporte.generarReporte(inventario);
-
     }
 }
-
+ 

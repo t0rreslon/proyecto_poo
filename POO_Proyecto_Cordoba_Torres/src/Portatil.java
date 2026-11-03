@@ -1,19 +1,24 @@
-public class Portatil extends Equipo{
+public class Portatil extends Equipo {
     private int memoriaRam;
-    private Cargador cargador;
+    private final Cargador cargador;
 
-    public Portatil(String codigo, String marca, boolean disponible, int memoriaRam, Cargador cargador){
+    public Portatil(String codigo, String marca, boolean disponible, int memoriaRam,
+                    String serialCargador, int potenciaCargador) {
         super(codigo, marca, disponible);
         this.memoriaRam = memoriaRam;
+        this.cargador = new Cargador(serialCargador, potenciaCargador); // composición
     }
-    public int getMemoriaram() {
+
+    public int getMemoriaRam() {
         return memoriaRam;
     }
 
-    @Override
-    public double getMultaDiaria(){
-        return 15000;
+    public Cargador getCargador() {
+        return cargador;
     }
 
-    
+    @Override
+    public double getMultaDiaria() {
+        return 15000;
+    }
 }
