@@ -85,11 +85,11 @@ class  MultaEstandar{}
 class MultaUniversitaria{}
 class NotificadorConsola{}
 
-class RespositorioMemoria{
+class RepositorioMemoria{
     prestamos : List<Prestamo>
 }
 
-interface RespositorioPrestamos{
+interface RepositorioPrestamos{
     + guardar(prestamo : Prestamo) : void
     + buscar(numero : int) : Prestamo
     + activosDe(persona : Persona) : List<Persona>
@@ -104,7 +104,7 @@ interface Notificador{
 }
 
 class ServicioPrestamos{
-    - repositorio : RespositorioPrestamos
+    - repositorio : RepositorioPrestamos
     - calculadora : CalculadoraMulta
     - notificador : Notificador
     + prestar(persona : Persona, equipo : Equipo) : Prestamo
@@ -120,9 +120,9 @@ Equipo <|-- Portatil
 Portatil *-- Cargador
 Persona <-- Prestamo
 Prestamo o-- Equipo
-RespositorioMemoria o-- Prestamo
-RespositorioPrestamos <|.. RespositorioMemoria
-ServicioPrestamos --> RespositorioPrestamos
+RepositorioMemoria o-- Prestamo
+RepositorioPrestamos <|.. RepositorioMemoria
+ServicioPrestamos --> RepositorioPrestamos
 ServicioPrestamos ..> Prestamo
 ServicioPrestamos --> CalculadoraMulta
 MultaEstandar ..|> CalculadoraMulta
