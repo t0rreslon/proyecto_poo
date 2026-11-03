@@ -54,7 +54,7 @@ public class Main {
                 que el docente preste el portátil ocupado.
                 Ambos deben ser rechazados con un mensaje claro. */
         /* ******************************************************************************** */
-        RepositorioMemoria repositorio = new RepositorioPrestamosMemoria();
+        RepositorioMemoria repositorio = new RepositorioPrestamo();
 
         ServicioPrestamos servicio = new ServicioPrestamos(
             new MultaEstandar(),
@@ -127,7 +127,7 @@ public class Main {
             y repita un préstamo con devolución tardía.          */
         /* ***************************************************** */
         RepositorioMemoria repositorioSemana =
-        new RepositorioPrestamosMemoria();
+        new RepositorioPrestamo();
 
         ServicioPrestamos servicioSemana = new ServicioPrestamos(
             new MultaUniversitaria(),

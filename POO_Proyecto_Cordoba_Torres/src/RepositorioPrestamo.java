@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositorioPrestamosMemoria implements RepositorioMemoria {
+public class RepositorioPrestamo implements RepositorioMemoria {
 
     private List<Prestamo> prestamos = new ArrayList<>();
 
